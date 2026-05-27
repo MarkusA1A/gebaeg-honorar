@@ -27,7 +27,23 @@ function updateDefaults() {
 
 function calculate() {
     const schätzungstyp = document.getElementById('schätzungstyp').value;
-    const schätzwert = parseFloat(document.getElementById('schätzwert').value) || 0;
+    const schätzwertInput = document.getElementById('schätzwert').value.trim();
+    
+    // Validierung: Feld leer lassen ist OK, aber wenn was eingegeben wird, muss es eine Zahl sein
+    if (schätzwertInput === '') {
+        document.getElementById('resultSection').style.display = 'none';
+        return;
+    }
+    
+    const schätzwert = parseFloat(schätzwertInput.replace(',', '.'));
+    
+    // Validierung: Muss eine gültige Zahl sein
+    if (isNaN(schätzwert)) {
+        console.error('Fehler: Schätzwert ist keine gültige Zahl');
+        document.getElementById('resultSection').style.display = 'none';
+        return;
+    }
+    
     const istAnteil = document.getElementById('anteil').checked;
     const istWohnung = document.getElementById('wohnung').checked;
 
