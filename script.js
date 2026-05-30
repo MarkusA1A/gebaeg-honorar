@@ -25,7 +25,7 @@ function updateDefaults() {
     document.getElementById('wohnung').checked = false;
 }
 
-function calculate() {
+function calculate(scrollToResult = false) {
     const schätzungstyp = document.getElementById('schätzungstyp').value;
     const schätzwertInput = document.getElementById('schätzwert').value.trim();
     
@@ -78,8 +78,11 @@ function calculate() {
 
     document.getElementById('resultAmount').textContent = formatCurrency(verrechnungsbetrag);
 
-    // Smooth scroll
-    document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+    // Smooth scroll nur bei explizitem Klick auf "Berechnen",
+    // damit die Seite beim Tippen am Handy nicht springt
+    if (scrollToResult) {
+        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 }
 
 function calculateGrundgebühr(wert, staffeln) {

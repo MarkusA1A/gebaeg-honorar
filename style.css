@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
 :root {
     --primary-color: #0d6e4f;
     --primary-light: #1a8f63;
@@ -20,12 +25,16 @@ body {
     background-color: var(--bg-color);
     color: var(--text-dark);
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: rgba(13, 110, 79, 0.15);
 }
 
 .container {
     max-width: 900px;
     margin: 0 auto;
-    padding: 40px 20px;
+    /* Safe-Area-Insets für iPhone-Notch / Home-Indicator */
+    padding: max(40px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right))
+             max(40px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
 }
 
 header {
@@ -90,8 +99,32 @@ main {
     border: 1px solid var(--border-color);
     border-radius: 6px;
     font-family: 'Outfit', sans-serif;
-    font-size: 1rem;
-    transition: all 0.2s ease;
+    /* 16px verhindert das automatische Hineinzoomen von iOS Safari beim Fokus */
+    font-size: 16px;
+    color: var(--text-dark);
+    background-color: var(--white);
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%230d6e4f' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    padding-right: 40px;
+}
+
+/* Spinner-Pfeile bei Zahlenfeldern entfernen (sauberer auf Touch) */
+.form-group input[type="number"]::-webkit-outer-spin-button,
+.form-group input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.form-group input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .form-group input:focus,
@@ -111,36 +144,54 @@ main {
     cursor: pointer;
     font-size: 0.95rem;
     color: var(--text-dark);
+    /* größere Tap-Fläche auf Touch-Geräten */
+    padding: 6px 0;
+    min-height: 44px;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .checkbox-label input[type="checkbox"] {
-    width: auto;
-    margin-right: 10px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    margin-right: 12px;
     cursor: pointer;
     accent-color: var(--primary-color);
 }
 
 .btn-calculate {
     width: 100%;
+    /* min-height 48px = komfortables Touch-Ziel */
+    min-height: 48px;
     padding: 14px 20px;
     background-color: var(--primary-color);
     color: var(--white);
     border: none;
     border-radius: 100px;
-    font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.05rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.15s ease;
     margin-top: 10px;
 }
 
-.btn-calculate:hover {
-    background-color: var(--primary-light);
-    box-shadow: 0 4px 12px rgba(13, 110, 79, 0.3);
-    transform: translateY(-2px);
+/* Hover-Effekte nur auf Geräten mit echtem Zeiger – verhindert "klebende"
+   Hover-Zustände nach dem Antippen auf iPhone/iPad */
+@media (hover: hover) {
+    .btn-calculate:hover {
+        background-color: var(--primary-light);
+        box-shadow: 0 4px 12px rgba(13, 110, 79, 0.3);
+        transform: translateY(-2px);
+    }
 }
 
 .btn-calculate:active {
+    background-color: var(--primary-light);
     transform: translateY(0);
     box-shadow: 0 2px 6px rgba(13, 110, 79, 0.2);
 }
@@ -306,10 +357,31 @@ footer {
     color: var(--text-light);
 }
 
-/* Responsive */
+/* Responsive – Tablets / iPad */
 @media (max-width: 768px) {
+    .container {
+        padding: max(28px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+                 max(28px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    }
+
+    header {
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+    }
+
     h1 {
-        font-size: 1.8rem;
+        font-size: 1.9rem;
+    }
+
+    main {
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .input-section,
+    .result-section,
+    .reference-section {
+        padding: 24px 20px;
     }
 
     .tariff-table {
@@ -317,10 +389,44 @@ footer {
     }
 
     .result-amount {
-        font-size: 2rem;
+        font-size: 2.1rem;
+    }
+}
+
+/* Responsive – Smartphones / iPhone */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5rem;
+        line-height: 1.25;
     }
 
-    .container {
-        padding: 20px 15px;
+    .subtitle {
+        font-size: 0.9rem;
+    }
+
+    .input-section,
+    .result-section,
+    .reference-section {
+        padding: 20px 16px;
+    }
+
+    .result-box {
+        padding: 24px 16px;
+    }
+
+    .result-amount {
+        font-size: 1.85rem;
+        letter-spacing: 0;
+        /* lange Beträge umbrechen statt überlaufen */
+        overflow-wrap: anywhere;
+    }
+
+    .detail-row {
+        flex-wrap: wrap;
+        gap: 2px;
+    }
+
+    .detail-row .value {
+        margin-left: auto;
     }
 }
