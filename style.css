@@ -84,7 +84,7 @@ main {
     margin-bottom: 20px;
 }
 
-.form-group label {
+.form-group label:not(.checkbox-label) {
     display: block;
     font-weight: 500;
     margin-bottom: 8px;
@@ -135,7 +135,7 @@ main {
 }
 
 .checkbox-group {
-    margin: 20px 0;
+    margin: 8px 0;
 }
 
 .checkbox-label {
@@ -144,20 +144,66 @@ main {
     cursor: pointer;
     font-size: 0.95rem;
     color: var(--text-dark);
-    /* größere Tap-Fläche auf Touch-Geräten */
-    padding: 6px 0;
-    min-height: 44px;
+    padding: 14px 16px;
+    min-height: 52px;
     -webkit-user-select: none;
     user-select: none;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--white);
+    gap: 12px;
+    position: relative;
+    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.checkbox-label input[type="checkbox"] {
+/* Visueller Checkbox-Indikator */
+.checkbox-label::before {
+    content: '';
     width: 22px;
     height: 22px;
     flex-shrink: 0;
-    margin-right: 12px;
-    cursor: pointer;
-    accent-color: var(--primary-color);
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--white);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 13px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Native Checkbox unsichtbar, aber für Accessibility erreichbar */
+.checkbox-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+/* Hover – nur auf Geräten mit Maus */
+@media (hover: hover) {
+    .checkbox-label:hover {
+        border-color: var(--primary-color);
+        background-color: rgba(13, 110, 79, 0.03);
+    }
+    .checkbox-label:hover::before {
+        border-color: var(--primary-color);
+    }
+}
+
+/* Ausgewählt */
+.checkbox-label:has(input:checked) {
+    border-color: var(--primary-color);
+    background-color: rgba(13, 110, 79, 0.07);
+    box-shadow: 0 0 0 3px rgba(13, 110, 79, 0.08);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.checkbox-label:has(input:checked)::before {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13 13'%3E%3Cpath d='M2 6.5l3.5 3.5 5.5-5.5' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
 }
 
 .btn-calculate {
