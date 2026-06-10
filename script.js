@@ -1,19 +1,19 @@
-// GebAG § 51 Gebührentarife
+// GebAG § 51 Gebührentarife – BGBl. II Nr. 430/2023, ab 1.1.2024
 const TARIFE = {
     haus: {
         name: 'Hausschätzung',
         staffeln: [
-            { bis: 36340, gebühr: 415.40 },
-            { bis: 72670, gebühr: 728.90 },
-            { über: 72670, gebühr: 728.90, zuschlag: 121.70, pro: 36340 }
+            { bis: 36340, gebühr: 602.30 },
+            { bis: 72670, gebühr: 1056.90 },
+            { über: 72670, gebühr: 1056.90, zuschlag: 176.50, pro: 36340 }
         ]
     },
     baugrund: {
         name: 'Baugrundschätzung',
         staffeln: [
-            { bis: 5090, gebühr: 111.90 },
-            { bis: 7270, gebühr: 146.10 },
-            { über: 7270, gebühr: 146.10, zuschlag: 22.70, pro: 3630 }
+            { bis: 5090, gebühr: 162.30 },
+            { bis: 7270, gebühr: 211.80 },
+            { über: 7270, gebühr: 211.80, zuschlag: 32.90, pro: 3630 }
         ]
     }
 };
