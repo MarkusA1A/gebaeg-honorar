@@ -18,6 +18,41 @@ const TARIFE = {
     }
 };
 
+function formatSchätzwert(input) {
+    const cursor = input.selectionStart;
+    const raw = input.value;
+
+    // Zeichenanzahl vor dem Cursor (ohne Tausenderpunkte) merken
+    let significantBeforeCursor = 0;
+    for (let i = 0; i < cursor; i++) {
+        if (raw[i] !== '.') significantBeforeCursor++;
+    }
+
+    // Komma als Dezimaltrennzeichen, Punkte ignorieren (werden neu gesetzt)
+    const commaIdx = raw.indexOf(',');
+    let intPart, decPart;
+    if (commaIdx >= 0) {
+        intPart = raw.substring(0, commaIdx).replace(/[^\d]/g, '');
+        decPart = raw.substring(commaIdx + 1).replace(/[^\d]/g, '');
+    } else {
+        intPart = raw.replace(/[^\d]/g, '');
+        decPart = null;
+    }
+
+    const formattedInt = intPart ? intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+    const newVal = decPart !== null ? formattedInt + ',' + decPart : formattedInt;
+    input.value = newVal;
+
+    // Cursor relativ zu den bedeutenden Zeichen wiederherstellen
+    let newCursor = 0;
+    let counted = 0;
+    while (newCursor < newVal.length && counted < significantBeforeCursor) {
+        if (newVal[newCursor] !== '.') counted++;
+        newCursor++;
+    }
+    input.setSelectionRange(newCursor, newCursor);
+}
+
 function updateDefaults() {
     document.getElementById('schätzwert').value = '';
     document.getElementById('resultSection').style.display = 'none';
@@ -35,7 +70,7 @@ function calculate(scrollToResult = false) {
         return;
     }
     
-    const schätzwert = parseFloat(schätzwertInput.replace(',', '.'));
+    const schätzwert = parseFloat(schätzwertInput.replace(/\./g, '').replace(',', '.'));
     
     // Validierung: Muss eine gültige Zahl sein
     if (isNaN(schätzwert)) {
